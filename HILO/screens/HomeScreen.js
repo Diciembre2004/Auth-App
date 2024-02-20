@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { getAuth, signOut, signInWithEmailAndPassword } from "firebase/auth";
 import app from "../firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { NavigationContainer } from "@react-navigation/native";
 
 const HomeScreen = ({ navigation }) => {
 	const [ifSavedPressed, setIfSavedPressed] = useState(false);
@@ -101,13 +102,18 @@ const HomeScreen = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.headerText}>Hello {nameOfUser}</Text>
+			<Text style={styles.headerText}>Bienvenido {nameOfUser}</Text>
 			<Image
 				style={{ width: "100%", height: 400 }}
 				source={{ uri: `${imagePath}` }}
 			/>
 			<Pressable style={styles.customButton} onPress={signOutt}>
 				<Text style={styles.buttonText}>Sign Out</Text>
+			</Pressable>
+			<Pressable
+				style={styles.customButton}
+				onPress={() => navigation.navigate("Notas")}>
+				<Text style={styles.buttonText}>Ver Notas</Text>
 			</Pressable>
 		</View>
 	);

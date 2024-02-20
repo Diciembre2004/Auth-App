@@ -7,21 +7,15 @@ import RegisterScreen from "./screens/RegisterScreen";
 import HomeScreen from "./screens/HomeScreen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState, useEffect } from "react";
-import { enableExperimentalWebImplementation } from "react-native-gesture-handler";
+import "react-native-gesture-handler";
+import Notas from "./screens/Notas";
+import CreateNote from "./screens/CreateNote";
+import DetailsNote from "./screens/DetailsNote";
+
 //add this below for removing warning if you want too
-import { LogBox } from "react-native";
-LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
-LogBox.ignoreAllLogs(); //Ignore all log notifications
-
-//npm install firebase
-
-//npm install @react-native-async-storage/async-storage
-
-//npm install @react-navigation/native
-
-//npm install @react-navigation/stack
-
-//npx expo install react-native-gesture-handler
+//import { LogBox } from "react-native";
+//LogBox.ignoreLogs(["Warning: ..."]); // Ignore log notification by message
+//LogBox.ignoreAllLogs(); //Ignore all log notifications
 
 const Stack = createStackNavigator();
 
@@ -32,12 +26,6 @@ export default function App() {
 	useEffect(() => {
 		getData();
 	}, []);
-
-	useEffect(() => {
-		if (savedLogInValues.length !== 0) {
-			console.log(savedLogInValues);
-		}
-	}, [savedLogInValues]);
 
 	async function getData() {
 		try {
@@ -106,12 +94,42 @@ export default function App() {
 				/>
 				<Stack.Screen
 					name="Home"
+					component={HomeScreen}
 					options={{
-						title: "Home",
+						title: "Home hi",
 						headerLeft: null,
 						headerTintColor: "purple",
 					}}
-					component={HomeScreen}
+				/>
+				<Stack.Screen
+					name="Notas"
+					component={Notas}
+					options={{
+						title: "NOTAS APP",
+						headerTitleAlign: "center",
+						headerStyle: { backgroundColor: "#8B1874" },
+						headerTintColor: "white",
+					}}
+				/>
+				<Stack.Screen
+					name="Crear"
+					component={CreateNote}
+					options={{
+						title: "CREAR NOTAS",
+						headerTitleAlign: "center",
+						headerStyle: { backgroundColor: "#8B1874" },
+						headerTintColor: "white",
+					}}
+				/>
+				<Stack.Screen
+					name="Detail"
+					component={DetailsNote}
+					options={{
+						title: "DETALLES DE NOTA",
+						headerTitleAlign: "center",
+						headerStyle: { backgroundColor: "#8B1874" },
+						headerTintColor: "white",
+					}}
 				/>
 			</Stack.Navigator>
 		</NavigationContainer>
