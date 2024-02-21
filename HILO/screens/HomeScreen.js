@@ -10,22 +10,22 @@ const HomeScreen = ({ navigation }) => {
 	const [ifSavedPressed, setIfSavedPressed] = useState(false);
 	const [logInValues, setLogInValues] = useState([]);
 	const [nameOfUser, setNameOfUser] = useState("");
-	const [imagePath, setImagePath] = useState("");
 	const [savedLogInValues, setSavedLogInValues] = useState([]);
 
 	React.useEffect(() => {
+		//cuando se muestre en la pantalla, te suscribes al evento para recuperar informacion dentro de getUserData
 		const unsubscribe = navigation.addListener("focus", () => {
 			getUserData();
 		});
-		return unsubscribe;
-	}, [navigation]);
+		return unsubscribe; //sirve para evitar escuchar eventos que no estan en la pantalla/no son relevantes
+	}, [navigation]); //dependencia. cada vez que la navegacion cambia
 
 	async function getUserData() {
 		try {
-			const jsonValue = await AsyncStorage.getItem("myLogInfo");
-			const jsonValue2 = JSON.parse(jsonValue);
+			const jsonValue = await AsyncStorage.getItem("myLogInfo"); //con asyncstorage de agarran lo datos gracias a la clave, se utiliza getitem para devolverlo en forma de cadena de json
+			const jsonValue2 = JSON.parse(jsonValue); //y se transforma en un string para guardarlo en asyncstorage
 			if (jsonValue2 !== null) {
-				setSavedLogInValues(jsonValue2);
+				setSavedLogInValues(jsonValue2); //actualiza informacion en setSavedLogInValues
 			}
 		} catch (e) {
 			alert(e);
@@ -35,24 +35,23 @@ const HomeScreen = ({ navigation }) => {
 	useEffect(() => {
 		if (savedLogInValues.length !== 0) {
 			console.log(savedLogInValues);
-			const auth = getAuth(app);
+			const auth = getAuth(app); //obtenes las instacias del auth de firebase en firebase.js
 			signInWithEmailAndPassword(
+				//inica sesion guardados en savedLogInValues
 				auth,
 				savedLogInValues.emaill,
 				savedLogInValues.passwordd
 			)
 				.then((userCredential) => {
 					const user = userCredential.user;
-					console.log("user signed in");
 					if (user !== null) {
 						user.providerData.forEach((profile) => {
+							//se itera los datos del user
 							console.log("sign in provider: " + profile.providerId);
 							console.log("provider specific UID: " + profile.uid);
 							console.log("Name: " + profile.displayName);
 							console.log("Email: " + profile.email);
-							console.log("Photo url: " + profile.photoURL);
-							setNameOfUser(profile.displayName);
-							setImagePath(profile.photoURL);
+							setNameOfUser(profile.displayName); //guardo el user aca para despues saludarlo
 						});
 					}
 				})
@@ -60,25 +59,23 @@ const HomeScreen = ({ navigation }) => {
 					alert(e);
 				});
 		}
-	}, [savedLogInValues]);
+	}, [savedLogInValues]); //cuando esto cambia, ocurre todo lo de arriba
 
 	useEffect(() => {
 		if (ifSavedPressed === true) {
-			storeData();
+			storeData(); //storeData guarda la informacion
 			setIfSavedPressed(false);
 		}
-	}, [logInValues]);
+	}, [logInValues]); //se ejecuta lo de arriba cada vez que cambie gracias a useEffect
 
 	async function storeData() {
-		console.log(logInValues);
-		console.log("working");
 		try {
 			const savedValues = logInValues;
 			const jsonValue = await AsyncStorage.setItem(
-				"myLogInfo",
-				JSON.stringify(savedValues)
+				//setitem alamcena los datos en el almacenamiento asincronico
+				"myLogInfo", //la clave de acceso
+				JSON.stringify(savedValues) //convierte de objeto a cadena JSON para guardarlo en savedValues
 			);
-			console.log("data stored");
 			navigation.navigate("Login");
 			return jsonValue;
 		} catch (e) {
@@ -90,9 +87,8 @@ const HomeScreen = ({ navigation }) => {
 		const auth = getAuth(app);
 		signOut(auth)
 			.then(() => {
-				setIfSavedPressed(true);
-				setLogInValues([]);
-				console.log("user has signed out");
+				setIfSavedPressed(true); //actualiza el estado de IfSavedPressed,que es el boton de guardar
+				setLogInValues([]); //limpia lo almacenado
 				navigation.navigate("Login");
 			})
 			.catch((e) => {
@@ -102,11 +98,7 @@ const HomeScreen = ({ navigation }) => {
 
 	return (
 		<View style={styles.container}>
-			<Text style={styles.headerText}>Bienvenido {nameOfUser}</Text>
-			<Image
-				style={{ width: "100%", height: 400 }}
-				source={{ uri: `${imagePath}` }}
-			/>
+			<Text style={styles.headerText}>Buenos dias {nameOfUser}</Text>
 			<Pressable style={styles.customButton} onPress={signOutt}>
 				<Text style={styles.buttonText}>Sign Out</Text>
 			</Pressable>

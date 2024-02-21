@@ -17,7 +17,7 @@ import {
 	getDoc,
 	setDoct,
 } from "firebase/firestore";
-import { ListItem, Avatar } from "@rneui/themed";
+import { ListItem } from "@rneui/themed";
 import { ListItemChevron } from "@rneui/base/dist/ListItem/ListItem.Chevron";
 import { ListItemContent } from "@rneui/base/dist/ListItem/ListItem.Content";
 import { ListItemTitle } from "@rneui/base/dist/ListItem/ListItem.Title";
@@ -27,16 +27,18 @@ import app from "../firebase";
 const db = getFirestore(app);
 
 export default function Notas(props) {
-	const [lista, setLista] = useState([]);
+	const [lista, setLista] = useState([]); //estado de lista y con setlista que la actualiza
 
 	//logica para llamar la lista de documentos
 	useEffect(() => {
 		const getLista = async () => {
+			//debe ser asincornico para evitar los bloqueos y otras partes del codigo funcionen normalmente
 			try {
-				const querySnapshot = await getDocs(collection(db, "notas"));
+				const querySnapshot = await getDocs(collection(db, "notas")); //de firestore agarra coleccion llamado notas. Lo guarda todo en querySnapshot
 				const docs = [];
 				querySnapshot.forEach((doc) => {
-					const { titulo, detalle, fecha, hora } = doc.data();
+					//recorrido con forearch de cada doc que se guardo en querySnapshot
+					const { titulo, detalle, fecha, hora } = doc.data(); //y de ahi se extraen
 					docs.push({
 						id: doc.id,
 						titulo,
@@ -45,13 +47,13 @@ export default function Notas(props) {
 						hora,
 					});
 				});
-				setLista(docs);
+				setLista(docs); //y se llama a setLista para se actualice agregando el nuevo doc
 			} catch (error) {
 				console.log(error);
 			}
 		};
 		getLista();
-	}, [lista]);
+	}, [lista]); //se ejecuta lo de arriba cada vez que cambie gracias a useEffect
 
 	return (
 		<ScrollView>
@@ -64,23 +66,28 @@ export default function Notas(props) {
 			</View>
 
 			<View style={styles.contenedor}>
-				{lista.map((not) => (
-					<ListItem
-						bottomDivider
-						key={not.id}
-						onPress={() => {
-							props.navigation.navigate("Detail", {
-								notaId: not.id,
-							});
-						}}>
-						<ListItemChevron />
-
-						<ListItemContent>
-							<ListItemTitle style={styles.titulo}>{not.titulo}</ListItemTitle>
-							<ListItemSubtitle>{not.fecha}</ListItemSubtitle>
-						</ListItemContent>
-					</ListItem>
-				))}
+				{lista.map(
+					(
+						not //map itera en cada elemento de lista y los guarda en una not(a)
+					) => (
+						<ListItem //cada listitem representa una nota
+							bottomDivider
+							key={not.id}
+							onPress={() => {
+								props.navigation.navigate("Detail", {
+									notaId: not.id,
+								});
+							}}>
+							<ListItemChevron /> {/* una flecha */}
+							<ListItemContent>
+								<ListItemTitle style={styles.titulo}>
+									{not.titulo}
+								</ListItemTitle>
+								<ListItemSubtitle>{not.fecha}</ListItemSubtitle>
+							</ListItemContent>
+						</ListItem>
+					)
+				)}
 			</View>
 		</ScrollView>
 	);
@@ -89,7 +96,6 @@ export default function Notas(props) {
 const styles = StyleSheet.create({
 	boton: {
 		backgroundColor: "#B71375",
-		borderColor: "#FC4F00",
 		borderWidth: 3,
 		borderRadius: 20,
 		marginLeft: 20,

@@ -24,13 +24,14 @@ const db = getFirestore(app);
 
 export default function CreateNote(props) {
 	const initialState = {
+		//recibe props. initiañstate los inicializa vacios
 		titulo: "",
 		detalle: "",
 	};
 
-	const [date, setDate] = useState(new Date(1598051730000));
-	const [mode, setMode] = useState("date");
-	const [show, setShow] = useState(false);
+	const [date, setDate] = useState(new Date(1598051730000)); //se inicializa con una fecha especifica
+	const [mode, setMode] = useState("date"); //nmodo de fecha y hora
+	const [show, setShow] = useState(false); //si la fecha se muestra, empieza como no
 	const [text, setText] = useState("empty");
 	const [fecha, setFecha] = useState("");
 	const [hora, setHora] = useState("");
@@ -217,7 +218,6 @@ const styles = StyleSheet.create({
 	},
 	botonEnviar: {
 		backgroundColor: "#B71375",
-		borderColor: "#FC4F00",
 		borderWidth: 3,
 		borderRadius: 20,
 		marginLeft: 20,

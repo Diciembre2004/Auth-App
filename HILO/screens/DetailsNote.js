@@ -78,7 +78,6 @@ const styles = StyleSheet.create({
 	},
 	botonEliminar: {
 		backgroundColor: "#B71375",
-		borderColor: "#FC4F00",
 		borderWidth: 3,
 		borderRadius: 20,
 		marginLeft: 20,
